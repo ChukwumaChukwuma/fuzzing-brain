@@ -25,9 +25,18 @@ from common.utils.git_utils import (
     parse_commit_diff,
 )
 
-# Code analysis utilities
+# Code analysis utilities (binary fuzzing)
 from common.utils.code_analysis import (
     extract_call_paths_from_analysis_service,
+)
+
+# Web analysis utilities
+from common.utils.web_analysis import (
+    extract_web_data_flows_from_analysis_service,
+    query_framework_vulnerabilities,
+    query_dependency_vulnerabilities,
+    extract_call_graph,
+    analyze_typescript_types,
 )
 
 # Crash parsing utilities
@@ -72,8 +81,14 @@ __all__ = [
     'get_commit_info',
     'extract_diff_functions_using_funtarget',
     'parse_commit_diff',
-    # Code analysis
+    # Code analysis (binary)
     'extract_call_paths_from_analysis_service',
+    # Web analysis
+    'extract_web_data_flows_from_analysis_service',
+    'query_framework_vulnerabilities',
+    'query_dependency_vulnerabilities',
+    'extract_call_graph',
+    'analyze_typescript_types',
     # Crash parsing
     'extract_java_fallback_location',
     'extract_asan_fallback_location',
@@ -92,9 +107,18 @@ __all__ = [
     'find_fuzzer_source',
 ]
 
+# Web vulnerability utilities
 from .web_vulnerability_signature import (
     generate_web_vulnerability_signature,
     generate_web_vulnerability_report,
     deduplicate_vulnerabilities,
     classify_vulnerability_severity,
 )
+
+# Add web vulnerability utilities to __all__
+__all__.extend([
+    'generate_web_vulnerability_signature',
+    'generate_web_vulnerability_report',
+    'deduplicate_vulnerabilities',
+    'classify_vulnerability_severity',
+])
