@@ -51,6 +51,41 @@ class StrategyConfig:
     # Logging configuration
     log_dir: str = "./logs"
 
+    # ========== WEB-SPECIFIC CONFIGURATION ==========
+    # These fields are used by WebFuzzingBrain strategies
+
+    # Browser configuration
+    browser_type: str = "chromium"  # chromium, firefox, webkit
+    headless: bool = True
+    browser_timeout: int = 30  # seconds
+    max_browser_instances: int = 3  # max concurrent browsers per worker
+    viewport_width: int = 1280
+    viewport_height: int = 720
+
+    # Web application configuration
+    target_url: Optional[str] = None  # Target web application URL
+    web_framework: Optional[str] = None  # react, vue, angular, vanilla, etc.
+    web_vulnerability_types: List[str] = field(default_factory=lambda: [
+        "xss", "sqli", "csrf", "prototype_pollution"
+    ])  # Target vulnerability types for focused testing
+
+    # Web fuzzing parameters
+    payload_count: int = 5  # Number of payloads to generate per iteration
+    payload_context: str = "html"  # html, attribute, javascript, url
+    database_type: str = "generic"  # mysql, postgresql, mssql, oracle, sqlite, generic
+
+    # Web evidence collection
+    capture_screenshots: bool = True
+    capture_har: bool = True  # HTTP Archive
+    capture_dom_snapshots: bool = True
+    evidence_dir: str = "./web_evidence"
+
+    # Web-specific timeouts
+    page_load_timeout: int = 30  # seconds
+    navigation_timeout: int = 30  # seconds
+
+    # ========== END WEB-SPECIFIC CONFIGURATION ==========
+
     # Environment variables (read once at init)
     api_key_id: Optional[str] = field(init=False)
 
@@ -74,6 +109,10 @@ class StrategyConfig:
 
         # Ensure log directory exists
         os.makedirs(self.log_dir, exist_ok=True)
+
+        # Ensure web evidence directory exists (for web strategies)
+        if self.evidence_dir:
+            os.makedirs(self.evidence_dir, exist_ok=True)
 
         # Normalize language
         if not self.language.startswith('c'):

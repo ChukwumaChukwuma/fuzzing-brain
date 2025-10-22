@@ -7,3 +7,24 @@ loguru>=0.7.0
 
 # Type checking (runtime)
 typing-extensions>=4.8.0
+
+# ============================================================================
+# WebFuzzingBrain Web Testing Dependencies
+# ============================================================================
+
+# Browser automation
+playwright>=1.48.0
+
+# HTTP client
+requests>=2.31.0
+urllib3>=2.0.0
+
+# JavaScript parsing
+esprima>=4.0.1
+
+# HTML/DOM parsing
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Additional utilities for web testing
+html5lib>=1.1
