@@ -91,3 +91,10 @@ __all__ = [
     # Fuzzer utilities
     'find_fuzzer_source',
 ]
+
+from .web_vulnerability_signature import (
+    generate_web_vulnerability_signature,
+    generate_web_vulnerability_report,
+    deduplicate_vulnerabilities,
+    classify_vulnerability_severity,
+)
