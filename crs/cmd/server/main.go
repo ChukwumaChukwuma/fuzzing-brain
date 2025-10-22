@@ -92,12 +92,16 @@ func main() {
     {
         // SARIF endpoints
         v1.POST("/sarif/", h.SubmitSarif)
-        
+
         // Task endpoints
-        v1.POST("/task/", h.SubmitTask)  
+        v1.POST("/task/", h.SubmitTask)
         v1.DELETE("/task/", h.CancelAllTasks)
         v1.DELETE("/task/:task_id/", h.CancelTask)
-        
+
+        // Web fuzzing endpoints
+        v1.POST("/web/task/", h.SubmitWebTask)
+        v1.GET("/web/task/:task_id/stats/", h.GetWebPOVStats)
+
         // Status reset endpoint
         v1.POST("/status/reset/", h.ResetStatus)
     }

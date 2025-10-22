@@ -385,3 +385,68 @@ func (h *Handler) CancelAllTasks(c *gin.Context) {
     }
     c.Status(http.StatusOK)
 }
+
+// SubmitWebTask handles web fuzzing task submission
+func (h *Handler) SubmitWebTask(c *gin.Context) {
+    ctx, span := telemetry.StartSpan(context.Background(), "submit_web_task")
+    defer span.End()
+
+    // Read the raw request body
+    rawBody, err := io.ReadAll(c.Request.Body)
+    if err != nil {
+        log.Printf("Error reading web task request body: %v", err)
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    // Restore the body for binding
+    c.Request.Body = io.NopCloser(bytes.NewBuffer(rawBody))
+
+    log.Printf("Received web task request: %s", string(rawBody))
+
+    var task models.WebTask
+    if err := c.ShouldBindJSON(&task); err != nil {
+        log.Printf("Error parsing web task: %v", err)
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    span.SetAttributes(
+        attribute.String("crs.task.message_id", task.MessageID.String()),
+        attribute.Int("crs.task.count", len(task.Tasks)),
+    )
+
+    log.Printf("Processing web task with MessageID: %s", task.MessageID)
+
+    // Check if service supports web tasks
+    if webService, ok := h.crs.(services.WebCRSService); ok {
+        if err := webService.SubmitWebTask(task); err != nil {
+            log.Printf("Error submitting web task: %v", err)
+            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            return
+        }
+    } else {
+        log.Printf("Error: CRS service does not support web tasks")
+        c.JSON(http.StatusNotImplemented, gin.H{"error": "web tasks not supported"})
+        return
+    }
+
+    log.Printf("Successfully processed web task MessageID: %s", task.MessageID)
+    c.Status(http.StatusAccepted)
+}
+
+// GetWebPOVStats returns statistics for web POV generation
+func (h *Handler) GetWebPOVStats(c *gin.Context) {
+    taskID := c.Param("task_id")
+
+    if webService, ok := h.crs.(services.WebCRSService); ok {
+        stats, err := webService.GetWebPOVStats(taskID)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            return
+        }
+        c.JSON(http.StatusOK, stats)
+    } else {
+        c.JSON(http.StatusNotImplemented, gin.H{"error": "web stats not supported"})
+    }
+}
